@@ -5,13 +5,14 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
         tools:context=".activity.Main">
     <LinearLayout android:orientation="vertical" android:weightSum="2" android:layout_width="match_parent"
                   android:layout_height="match_parent">
         <RelativeLayout
                 android:layout_weight="1.6"
                 android:layout_marginTop="8dp"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent" android:layout_height="500dp">
             <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -31,25 +32,33 @@
 
             <RelativeLayout
                     android:layout_centerHorizontal="true"
-                    android:layout_width="155dp"
-                    android:layout_height="250dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
                 <TextView
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:id="@+id/welcome"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:textSize="18sp"
+                        android:layout_toRightOf="@id/welcome_center"
                         android:text="خوش آمدید"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"/>
+                />
+                <RelativeLayout android:layout_width="5dp" android:layout_height="1dp"
+                                android:layout_centerInParent="true"
+                                android:id="@+id/welcome_center"/>
                 <TextView
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
-                        android:layout_alignParentStart="true"
                         android:textColor="#49C9A2"
                         android:text="امیررضا"
                         android:textStyle="bold"
+                        android:layout_toLeftOf="@id/welcome_center"
+
                         android:layout_margin="2dp"
-                        android:layout_alignParentLeft="true"/>
+                />
             </RelativeLayout>
             <RelativeLayout
                     android:layout_width="match_parent"
@@ -62,12 +71,13 @@
             >
 
                 <EditText
-                        android:id="@+id/input"
+                        android:id="@+id/search"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:padding="6dp"
                         android:maxLines="1"
+                        android:imeOptions="actionSearch"
                         android:inputType="text"
                         android:textColor="#414141"
                         android:textDirection="rtl"
@@ -75,8 +85,10 @@
                         android:layout_centerVertical="true"
                         android:hint="جستجو..."
                         android:textColorHint="#272727"
+
                 />
                 <ImageView
+                        android:id="@+id/searchBtn"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_alignParentStart="true"
@@ -88,7 +100,7 @@
                 />
             </RelativeLayout>
         </RelativeLayout>
-        <RelativeLayout android:layout_marginTop="20dp" android:layout_weight="1" android:layout_width="match_parent"
+        <RelativeLayout android:layout_marginTop="20dp" android:layout_weight="0.4" android:layout_width="match_parent"
                         android:layout_height="match_parent">
             <RelativeLayout
                     android:id="@+id/head"
@@ -135,12 +147,14 @@
 
                 </RelativeLayout>
                 <RelativeLayout android:layout_width="150dp" android:layout_height="wrap_content">
-                    <RelativeLayout android:background="@drawable/new_btn_bg"
-                                    android:layout_width="100dp"
-                                    android:layout_centerVertical="true"
-                                    android:clickable="true"
-                                    android:focusable="true"
-                                    android:layout_height="38dp">
+                    <RelativeLayout
+                            android:id="@+id/addPassword"
+                            android:background="@drawable/new_btn_bg"
+                            android:layout_width="100dp"
+                            android:layout_centerVertical="true"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_height="38dp">
                         <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -161,7 +175,7 @@
             <android.support.v7.widget.RecyclerView
                     android:id="@+id/passwordsList"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/head"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="20dp"
@@ -171,4 +185,59 @@
 
         </RelativeLayout>
     </LinearLayout>
+    <RelativeLayout
+
+            android:visibility="gone"
+            android:translationY="-500dp"
+            android:id="@+id/modal"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:layout_height="match_parent">
+        <RelativeLayout android:layout_centerInParent="true"
+                        android:layout_margin="12dp" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+            <RelativeLayout android:id="@+id/sheetHead"
+                            android:background="@drawable/sheet_head_bg"
+                            android:layout_width="match_parent"
+                            android:layout_height="55dp">
+                <ImageView android:layout_width="32dp"
+                           android:id="@+id/hideSheet"
+                           android:layout_margin="10dp"
+                           android:padding="5dp"
+                           android:layout_height="32dp"
+                           android:layout_alignParentStart="true"
+                           android:src="@drawable/ic_cancel"
+                           android:layout_alignParentLeft="true"/>
+                <ImageView android:layout_width="wrap_content"
+                           android:id="@+id/sheetIcon"
+                           android:layout_margin="10dp"
+                           android:padding="5dp"
+                           android:layout_height="wrap_content"
+                           android:layout_centerVertical="true"
+
+                           android:layout_alignParentEnd="true"
+                           android:src="@drawable/ic_ice"
+                           android:layout_alignParentRight="true"/>
+                <TextView android:id="@+id/modalTitle"
+                          android:layout_width="wrap_content"
+                          android:layout_toLeftOf="@id/sheetIcon"
+                          android:layout_centerVertical="true"
+                          android:layout_height="wrap_content"
+                          android:layout_marginRight="-3dp"
+                          android:text="تست عنوان"
+                          android:textSize="16sp"
+
+                />
+            </RelativeLayout>
+            <fragment
+                    android:id="@+id/mainFrg"
+                    android:layout_width="match_parent"
+                    android:layout_below="@id/sheetHead"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:name="ir.amirsalimi.passapp.fragment.Fragment_newPass"
+            />
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

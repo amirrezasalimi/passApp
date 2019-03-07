@@ -24,6 +24,7 @@ import android.support.v4.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
 import android.support.v4.content.ContextCompat.getSystemService
 import android.os.SystemClock
+import android.text.Editable
 import android.view.Gravity
 
 
@@ -42,12 +43,13 @@ class InputView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
             title.text = it
         }
         attributes.getString(R.styleable.InputView_hint).let {
-            input.hint=it
+            input.hint = it
         }
         attributes.getString(R.styleable.InputView_type).let {
             if (it == "password") {
                 passwordMod(true)
             }
+
         }
         attributes.getString(R.styleable.InputView_message).let {
             message.visibility = View.VISIBLE
@@ -58,24 +60,24 @@ class InputView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
         }
 
 
-        val fixedTitle:Boolean=attributes.getBoolean(R.styleable.InputView_fixed_title,false)
-        val rtl:Boolean=attributes.getBoolean(R.styleable.InputView_rtl,true)
+        val fixedTitle: Boolean = attributes.getBoolean(R.styleable.InputView_fixed_title, false)
+        val rtl: Boolean = attributes.getBoolean(R.styleable.InputView_rtl, true)
 
-        if(rtl){
+        if (rtl) {
             input.gravity = Gravity.START
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                input.textAlignment= View.TEXT_ALIGNMENT_VIEW_END
+                input.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
             }
-        }else{
+        } else {
             input.gravity = Gravity.END
         }
-        if(fixedTitle) {
+        if (fixedTitle) {
             val params = title.layoutParams as ViewGroup.MarginLayoutParams
-            title.textSize=13f
+            title.textSize = 13f
             title.setTextColor(Color.parseColor("#414141"))
             params.topMargin = 0
             title.layoutParams = params
-        }else{
+        } else {
             input.setOnTouchListener { arg0, arg1 ->
                 if (input.text.isEmpty()) {
                     toggleTitle(true)
@@ -117,19 +119,13 @@ class InputView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
         }
         attributes.recycle()
     }
-    fun setMessage(text:String,color:Int?=null){
-        if(text==""){
-            message.text = text
-            //  message.visibility = View.GONE
-        }else{
-            color.let{
-                message.setTextColor(color as Int)
-            }
-          //  message.visibility = View.VISIBLE
-            message.text = text
+
+    fun setMessage(text: String, color: Int? = null) {
+        color.let {
+            message.setTextColor(color as Int)
         }
-
-
+        //  message.visibility = View.VISIBLE
+        message.text = text
     }
 
     fun passwordMod(ye: Boolean) {
@@ -138,6 +134,15 @@ class InputView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
         } else {
             input?.transformationMethod = null
         }
+    }
+
+    fun setText(text: String) {
+        toggleTitle(true)
+        this.input.setText(text)
+    }
+
+    fun getText(): String {
+        return this.input.text.toString()
     }
 
     fun setType(type: Int) {
@@ -162,12 +167,12 @@ class InputView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
             return
         }
         activeTitle = active
-        if(active){
-            title.textSize=13f
+        if (active) {
+            title.textSize = 13f
             title.setTextColor(Color.parseColor("#414141"))
-        }else{
+        } else {
             title.setTextColor(Color.parseColor("#5E5E5E"))
-            title.textSize=15f
+            title.textSize = 15f
         }
         ValueAnimator.ofInt(if (active) 31 else 0, if (active) 0 else 31).apply {
             addUpdateListener {

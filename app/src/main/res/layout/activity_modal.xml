@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        tools:context=".activity.modal">
+
+     <RelativeLayout android:id="@+id/sheetHead"
+
+                    android:background="@drawable/sheet_head_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp">
+        <ImageView android:layout_width="32dp"
+                   android:id="@+id/hideSheet"
+
+                   android:layout_height="32dp"
+                   android:layout_centerInParent="true"
+                   android:src="@drawable/ic_hide_sheet"
+                    />
+        </RelativeLayout>
+    <RelativeLayout
+            android:background="#EBEBEB"
+            android:id="@+id/modalBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
+            android:layout_below="@id/sheetHead">
+        <ir.amirsalimi.passapp.view.InputView
+                android:id="@+id/_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="عنوان رمز"
+                app:rtl="true"
+                app:title_background="#EBEBEB"
+        />
+        <ir.amirsalimi.passapp.view.InputView
+                android:layout_below="@id/_title"
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="رمز عبور"
+                app:rtl="true"
+                app:type="password"
+                app:title_background="#EBEBEB"
+        />
+    </RelativeLayout>
+</RelativeLayout>

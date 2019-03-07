@@ -69,9 +69,6 @@ class Register : BaseActivity() {
                 passView.invalidate()
             }
         })
-
-
-
         if (password.text().isEmpty()) {
             passView.visibility = View.VISIBLE
         }

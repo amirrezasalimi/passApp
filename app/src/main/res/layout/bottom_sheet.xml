@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/bottom_sheet"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content">
+    <RelativeLayout android:layout_width="match_parent"  android:layout_alignParentBottom="true" android:layout_height="wrap_content">
+        <RelativeLayout
+                android:id="@+id/topBottomSheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <RelativeLayout android:id="@+id/sheetHead"
+                            android:background="@drawable/sheet_head_bg"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp">
+                <ImageView android:layout_width="32dp"
+                           android:id="@+id/hideSheet"
+                           android:layout_height="32dp"
+                           android:layout_centerInParent="true"
+                           android:src="@drawable/ic_hide_sheet"
+                           android:layout_marginTop="6dp"/>
+            </RelativeLayout>
+            <RelativeLayout
+                    android:layout_below="@id/sheetHead"
+                    android:id="@+id/sheetContent"
+                    android:background="#EBEBEB"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <include layout="@layout/newpassword_modal" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>
+

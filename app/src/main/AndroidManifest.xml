@@ -20,9 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Register"  android:theme="@style/FullScreen">
+        <activity
+                android:name=".activity.Register"
+                android:theme="@style/FullScreen">
         </activity>
-        <activity android:name=".activity.Main" android:theme="@style/AppTheme.default">
+        <activity
+                android:name=".activity.Main"
+                android:theme="@style/AppTheme.default">
+        </activity>
+        <activity android:name=".activity.modal"  android:theme="@style/AppTheme.modal" >
         </activity>
     </application>
 

@@ -32,8 +32,8 @@ class Splash : BaseActivity() {
                     Log.d("test:", this.count.toString())
                     Log.d("test:", this.columnNames.toString())
 
-                    val parser = rowParser { id: Int, name: String, email: String ->
-                        Triple(id, name, email)
+                    val parser = rowParser { id: Int, name: String, value: String ->
+                        Triple(id, name, value)
                     }
                     for (triple in parseList(parser)) {
                         Log.d("test:",triple.first.toString()+" - "+triple.second+" - "+triple.third)

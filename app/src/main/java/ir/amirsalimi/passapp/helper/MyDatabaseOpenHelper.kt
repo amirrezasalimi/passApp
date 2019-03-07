@@ -28,12 +28,13 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, AppConfi
         db.createTable("Passwords", true,
             "id" to INTEGER + PRIMARY_KEY + UNIQUE,
             "title" to TEXT,
-            "createdDate" to TEXT,
             "password" to TEXT)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // Here you can upgrade tables, as usual
         db.dropTable("Settings", true)
+        db.dropTable("Passwords", true)
+
     }
 }
