@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentTransaction
 import android.view.KeyEvent
 import ir.amirsalimi.passapp.fragment.Fragment_newPass
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Main : BaseActivity() {
@@ -28,7 +29,7 @@ class Main : BaseActivity() {
     var database: MyDatabaseOpenHelper? = null
     var passwordsInList: ArrayList<Password> = ArrayList<Password>()
     var modalAction:String=""
-    val modalValue = null
+    var modalValue:Array<String> = arrayOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,6 +39,7 @@ class Main : BaseActivity() {
             reverseLayout=true
         }
         passwordsAdapter = PasswordViewAdapter(this, passwordsInList)
+
         passwordsList.adapter = passwordsAdapter
         database?.use {
 
@@ -47,47 +49,14 @@ class Main : BaseActivity() {
                 val settings = parseSingle(rowParser)
                 name.text = settings.value
             }
-
             select("Passwords").exec {
                 numberSaved.text = "+${this.count}"
-               /* if (this.count < 5) {
-                    insert(
-                        "Passwords",
-                        "title" to "تست یک",
-                        "password" to "gdfgdfgddgfj"
-                    )
-                    insert(
-                        "Passwords",
-                        "title" to "تست دومین",
-                        "password" to "gdfgdfgddgfj"
-                    )
-                    insert(
-                        "Passwords",
-                        "title" to "تست سومی",
-                        "password" to "gdfgdfgddgfj"
-                    )
-                    insert(
-                        "Passwords",
-                        "title" to "تست چارمییی",
-                        "password" to "gdfgdfgddgfj"
-                    )
-                    insert(
-                        "Passwords",
-                        "title" to "تست پنج",
-                        "password" to "gdfgdfgddgfj"
-                    )
-                    insert(
-                        "Passwords",
-                        "title" to "ببب شششششیش",
-                        "password" to "gdfgdfgddgfj"
-                    )
-                }*/
                 val parser = rowParser { id: Int, title: String, password: String ->
                     Triple(id, title, password)
                 }
                 passwordsInList.clear()
                 for (triple in parseList(parser)) {
-                    passwordsInList.add(Password(title = triple.second, password = triple.third))
+                    passwordsInList.add(Password(id=triple.first,title = triple.second, password = triple.third))
                 }
                 passwordsAdapter!!.notifyDataSetChanged()
             }
@@ -113,15 +82,19 @@ class Main : BaseActivity() {
             filterPasswords(search.text.toString())
         }
         addPassword.setOnClickListener {
+            modalAction="add"
             modalTitle.text = "افزودن پسورد"
-            frgmngr().replace(R.id.mainFrg, Fragment_newPass.newInstance()).commit()
-            showModal(R.layout.newpassword_modal)
+            showAddPass()
 
         }
         hideSheet.setOnClickListener {
             hideModal()
         }
         //init models code
+    }
+    fun showAddPass(){
+        frgmngr().replace(R.id.mainFrg, Fragment_newPass.newInstance()).commit()
+        showModal()
     }
     fun frgmngr(): FragmentTransaction {
          return supportFragmentManager
@@ -137,10 +110,10 @@ class Main : BaseActivity() {
                 passwordsInList.clear()
                 for (triple in parseList(parser)) {
                     if (text.isEmpty()) {
-                        passwordsInList.add(Password(title = triple.second, password = triple.third))
+                        passwordsInList.add(Password(id=triple.first,title = triple.second, password = triple.third))
                     } else {
                         if (triple.second.matches(Regex(".*$text.*"))) {
-                            passwordsInList.add(Password(title = triple.second, password = triple.third))
+                            passwordsInList.add(Password(id=triple.first,title = triple.second, password = triple.third))
                         }
                     }
                     passwordsAdapter!!.notifyDataSetChanged()
@@ -148,7 +121,7 @@ class Main : BaseActivity() {
             }
         }
     }
-    fun showModal(layout: Int){
+    fun showModal(){
         val view = modal
         view.visibility = View.VISIBLE
         view.alpha = 0.0f

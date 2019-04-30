@@ -23,22 +23,26 @@ import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.fragment_new_password.view.*
 import kotlinx.android.synthetic.main.input_view.view.*
 import org.jetbrains.anko.db.insert
+import org.jetbrains.anko.db.update
+import org.jetbrains.anko.toast
 import se.simbio.encryption.Encryption
 import java.util.*
 
 
 class Fragment_newPass : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        val ctx=context as FragmentActivity
-        val parent: Main=activity as Main
+        val ctx = context as FragmentActivity
+        val parent: Main = activity as Main
         val view = inflater.inflate(R.layout.fragment_new_password, container, false)
 
         view.randomPass.setOnClickListener {
             view.password.setText(randomCharacter(9))
         }
-        val password=view.password
+        val password = view.password
 
         val passView = passwordCheck(ctx)
         val viewpass = ImageView(ctx)
@@ -78,41 +82,84 @@ class Fragment_newPass : Fragment() {
                 passView.invalidate()
             }
         })
+        var editId = 0
+        if (parent.modalAction == "edit") {
+            view._title.setText(parent.modalValue[1])
+            view.password.setText(parent.modalValue[2])
+            editId = parent.modalValue[0].toInt()
+
+        }
         view.submitPassword.setOnClickListener {
             hideKeyboard(parent)
 
-            if(view._title.text().isEmpty()){
+            if (view._title.text().isEmpty()) {
+                view._title.setMessage("عنوان نمیتواند خالی باشد", resources.getColor(R.color.danger))
+                return@setOnClickListener
+            } else {
                 view._title.setMessage("")
             }
+            if (view.password.text().isEmpty()) {
+                view.password.setMessage("رمز عبور نمیتواند خالی باشد", resources.getColor(R.color.danger))
+                return@setOnClickListener
+            } else {
+                view.password.setMessage("")
+            }
             parent.hideModal(300, fun() {
-                val key = AppConfig.APP_KEY +"_pass"
+                val key = AppConfig.APP_KEY + "_pass"
                 val salt = AppConfig.APP_KEY
                 val iv = ByteArray(16)
                 val encryption = Encryption.getDefault(key, salt, iv)
                 parent.database?.use {
 
-                    insert("Passwords",
-                        "title" to view._title.getText(),
-                        "password" to encryption.encryptOrNull(view.password.text()))
+                    if (editId == 0) {
+                        val id = insert(
+                            "Passwords",
+                            "title" to view._title.getText(),
+                            "password" to encryption.encryptOrNull(view.password.text())
+                        )
+                        parent.passwordsInList.add(
+                            Password(
+                                id.toInt(),
+                                view._title.text(),
+                                encryption.encryptOrNull(view.password.text())
+                            )
+                        )
+                        parent.passwordsList.smoothScrollToPosition(parent.passwordsInList.size - 1)
+                        parent.passwordsAdapter!!.notifyItemInserted(parent.passwordsInList.size - 1)
+                        parent.numberSaved.setText("+" + parent.passwordsInList.size)
+                    } else {
+                        update(
+                            "Passwords",
+                            "title" to view._title.text(),
+                            "password" to encryption.encryptOrNull(view.password.getText())
+                        ).whereSimple("id = ?", editId.toString())
+                            .exec()
+
+                        var pos=parent.modalValue[3]
+
+                        parent.filterPasswords("")
+                        parent.passwordsList.smoothScrollToPosition(pos.toInt())
+
+                        parent.toast("ویرایش شد")
+
+                    }
                 }
-                parent.passwordsList.smoothScrollToPosition(parent.passwordsInList.size - 1)
-                parent.passwordsInList.add(Password(view._title.text(),  encryption.encryptOrNull(view.password.text())))
-                parent.passwordsAdapter!!.notifyItemInserted(parent.passwordsInList.size - 1)
-                parent.numberSaved.setText("+"+parent.passwordsInList.size)
 
             })
 
         }
         return view
     }
-    fun randomCharacter(len:Int): String {
+
+    fun randomCharacter(len: Int): String {
         fun IntRange.random() =
-            Random().nextInt((endInclusive + 1) - start) +  start
-        val cc="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+$%^*@#!"
-        var o=""
-        for (i in 0..len){
-            val r_i = (0..(cc.length-1)).random()
-            o+=cc[r_i]
+            Random().nextInt((endInclusive + 1) - start) + start
+
+        val cc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+$%^*@#!"
+        var o = ""
+        for (i in 0..len) {
+            val r_i = (0..(cc.length - 1)).random()
+            o += cc[r_i]
         }
         return o
     }
@@ -127,11 +174,13 @@ class Fragment_newPass : Fragment() {
         }
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
     companion object {
         fun newInstance(): Fragment_newPass {
             return Fragment_newPass()
         }
     }
+
     fun checkPasswordState(text: String): Array<String> {
         var score = 0
         if (text.matches(Regex("^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{0,32}\$"))) {

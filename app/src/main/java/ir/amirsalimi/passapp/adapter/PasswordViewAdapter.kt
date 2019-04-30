@@ -18,7 +18,10 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.widget.Toast
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import ir.amirsalimi.passapp.activity.Main
 import ir.amirsalimi.passapp.app.AppConfig
+import ir.amirsalimi.passapp.fragment.Fragment_newPass
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_register.*
 import se.simbio.encryption.Encryption
 
@@ -46,11 +49,20 @@ class PasswordViewAdapter(_context: Context, val passwordList: ArrayList<Passwor
         holder.copy.setOnClickListener {
             copyText(item.password)
         }
+        val parent=context as Main
+
         val key = AppConfig.APP_KEY +"_pass"
         val salt = AppConfig.APP_KEY
         val iv = ByteArray(16)
         val encryption = Encryption.getDefault(key, salt, iv)
         holder.password.text=encryption.decryptOrNull(item.password)
+
+        holder.edit.setOnClickListener {
+            parent.modalAction="edit"
+            parent.modalTitle.text = "ویرایش ${item.title}"
+            parent.modalValue= arrayOf(item.id.toString(),item.title,holder.password.text.toString(),position.toString())
+            parent.showAddPass()
+        }
         setScaleAnimation(holder.itemView)
     }
 

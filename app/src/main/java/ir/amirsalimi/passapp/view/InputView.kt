@@ -121,7 +121,7 @@ class InputView(context: Context, attrs: AttributeSet) : RelativeLayout(context,
     }
 
     fun setMessage(text: String, color: Int? = null) {
-        color.let {
+        color?.let {
             message.setTextColor(color as Int)
         }
         //  message.visibility = View.VISIBLE
